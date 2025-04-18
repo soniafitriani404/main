@@ -1,92 +1,3 @@
-
-CREATE DATABASE aksesoris_cewek;
-USE aksesoris cewek;
-
--- Tabel Master
-
--- 1. Tabel Kategori
-CREATE TABLE tbl_kategori (
-    id_kategori INT AUTO_INCREMENT PRIMARY KEY,
-    nama_kategori VARCHAR(100) NOT NULL
-);
-
-
-INSERT INTO tbl_kategori (nama_kategori) VALUES
-('Cincin'),
-('Kalung'),
-('Gelang');
-
-
-
--- 2. Tabel Produk
-CREATE TABLE tbl_produk (
-    id_produk INT AUTO_INCREMENT PRIMARY KEY,
-    nama_produk VARCHAR(150) NOT NULL,
-    harga DECIMAL(10,2) NOT NULL,
-    stok INT NOT NULL,
-    id_kategori INT,
-    FOREIGN KEY (id_kategori) REFERENCES tbl_kategori(id_kategori) ON DELETE SET NULL
-);
-
-INSERT INTO tbl_produk (nama_produk, harga, stok, id_kategori) VALUES
-('Cincin Perak', 50000, 10, 1),
-('Kalung Emas', 250000, 5, 2),
-('Gelang Mutiara', 100000, 7, 3);
-
-
--- 3. Tabel Pelanggan
-CREATE TABLE tbl_pelanggan (
-    id_pelanggan INT AUTO_INCREMENT PRIMARY KEY,
-    nama_pelanggan VARCHAR(150) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    alamat TEXT NOT NULL
-);
-
-INSERT INTO tbl_pelanggan (nama_pelanggan, email, alamat) VALUES
-('Siti Aisyah', 'siti@gmail.com', 'Jakarta'),
-('Rina Putri', 'rina@gmail.com', 'Surabaya');
-
--- Tabel Transaksi
-
--- 4. Tabel Transaksi
-CREATE TABLE tbl_transaksi (
-    id_transaksi INT AUTO_INCREMENT PRIMARY KEY,
-    id_pelanggan INT,
-    tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total_harga DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (id_pelanggan) REFERENCES tbl_pelanggan(id_pelanggan) ON DELETE CASCADE
-);
-
-INSERT INTO tbl_transaksi (id_pelanggan, tanggal_transaksi, total_harga) VALUES
-(1, '2025-03-30', 300000),
-(2, '2025-03-29', 100000);
-
-
--- 5. Tabel Detail Transaksi
-CREATE TABLE tbl_detail_transaksi (
-    id_detail INT AUTO_INCREMENT PRIMARY KEY,
-    id_transaksi INT,
-    id_produk INT,
-    jumlah INT NOT NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (id_transaksi) REFERENCES tbl_transaksi(id_transaksi) ON DELETE CASCADE,
-    FOREIGN KEY (id_produk) REFERENCES tbl_produk(id_produk) ON DELETE CASCADE
-);
-
-INSERT INTO tbl_detail_transaksi (id_transaksi, id_produk, jumlah, subtotal) VALUES
-(1, 1, 1, 50000),      -- Siti beli 1x Cincin Perak
-(1, 2, 1, 250000),     -- Siti beli 1x Kalung Emas
-(2, 3, 1, 100000);     -- Rina beli 1x Gelang Mutiara
-
-
-SELECT * FROM tbl_transaksi;
-SELECT * FROM tbl_kategori;
-SELECT * FROM tbl_detail_transaksi;
-SELECT * FROM tbl_pelanggan;
-SELECT * FROM tbl_produk;
-
-
-
 CREATE DATABASE UMKM;
 DROP DATABASE umkm;
 
@@ -305,19 +216,51 @@ JOIN
     umkm ON produk_umkm.id_umkm = umkm.id_umkm;
     
     
- 
- CREATE OR REPLACE VIEW view_umkm_menengah AS
+ DROP VIEW IF EXISTS v_umkm_menengah;
+
+CREATE VIEW v_umkm_menengah AS
 SELECT 
-    umkm.nama_usaha, 
-    pemilik_umkm.nama_lengkap AS nama_pemilik, 
-    umkm.total_aset, 
-    umkm.omzet_per_tahun
-FROM umkm
-JOIN pemilik_umkm ON umkm.id_pemilik = pemilik_umkm.id_pemilik
-JOIN skala_umkm ON umkm.id_skala = skala_umkm.id_skala
-WHERE skala_umkm.nama_skala = 'Menengah';
+    u.nama_usaha,
+    p.nama_lengkap AS nama_pemilik,
+    u.total_aset,
+    u.omzet_per_tahun
+FROM umkm u
+JOIN skala_umkm s ON u.id_skala = s.id_skala
+JOIN pemilik_umkm p ON u.id_pemilik = p.id_pemilik
+WHERE s.nama_skala = 'Menengah';
+
+ CREATE OR REPLACE VIEW v_umkm_menengah AS
+SELECT 
+    u.nama_usaha,
+    p.nama_lengkap AS nama_pemilik,
+    u.total_aset,
+    u.omzet_per_tahun
+FROM umkm u
+JOIN skala_umkm s ON u.id_skala = s.id_skala
+JOIN pemilik_umkm p ON u.id_pemilik = p.id_pemilik
+WHERE LOWER(TRIM(s.nama_skala)) = 'menengah';
+UPDATE skala_umkm
+SET nama_skala = 'Menengah'
+WHERE LOWER(TRIM(nama_skala)) = 'menen';
 
 
 
+
+CREATE VIEW v_umkm_per_kota AS
+SELECT 
+    kk.nama_kabupaten_kota,
+    COUNT(u.id_umkm) AS jumlah_umkm
+FROM kabupaten_kota kk
+LEFT JOIN umkm u ON kk.id_kabupaten_kota = u.id_kabupaten_kota
+GROUP BY kk.nama_kabupaten_kota;
+
+
+
+
+SELECT * FROM  view_umkm_detail;
+SELECT * FROM  view_pemilik_dan_usaha;
+SELECT * FROM  view_produk_umkm;
+SELECT * FROM  view_umkm_menengah;
+SELECT * FROM v_umkm_per_kota;
 
 
