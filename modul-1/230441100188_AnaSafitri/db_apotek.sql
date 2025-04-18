@@ -1,0 +1,73 @@
+CREATE DATABASE db_apotek;
+USE db_apotek;
+
+CREATE TABLE USER (
+    Id_User INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL UNIQUE,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    PASSWORD VARCHAR(255) NOT NULL,
+    Jabatan VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Pegawai (
+    Id_Pegawai INT AUTO_INCREMENT PRIMARY KEY,
+    Id_User INT NOT NULL,
+    Nama VARCHAR(100) NOT NULL,
+    Alamat TEXT NOT NULL,
+    No_HP VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    JenisKelamin ENUM('Laki-laki', 'Perempuan') NOT NULL,
+    FOREIGN KEY (Id_User) REFERENCES USER(Id_User) ON DELETE CASCADE
+);
+
+CREATE TABLE Pembeli (
+    Id_Pembeli INT AUTO_INCREMENT PRIMARY KEY,
+    Id_User INT NOT NULL,
+    Nama VARCHAR(100) NOT NULL,
+    Alamat TEXT NOT NULL,
+    No_HP VARCHAR(20) NOT NULL,
+    Foto VARCHAR(255),
+    Tgl_Lahir DATE NOT NULL,
+    FOREIGN KEY (Id_User) REFERENCES USER(Id_User) ON DELETE CASCADE
+);
+
+CREATE TABLE Produsen (
+    Id_Produsen INT AUTO_INCREMENT PRIMARY KEY,
+    Id_User INT NOT NULL,
+    Nama VARCHAR(100) NOT NULL,
+    Alamat TEXT NOT NULL,
+    FOREIGN KEY (Id_User) REFERENCES USER(Id_User) ON DELETE CASCADE
+);
+
+CREATE TABLE Obat (
+    Id_Obat INT AUTO_INCREMENT PRIMARY KEY,
+    Id_Produsen INT NOT NULL,
+    Id_User INT NOT NULL,
+    Nama VARCHAR(100) NOT NULL,
+    Deskripsi TEXT,
+    Stok INT NOT NULL CHECK (Stok >= 0),
+    Kategori VARCHAR(50),
+    Harga DECIMAL(10,2) NOT NULL CHECK (Harga > 0),
+    FOREIGN KEY (Id_Produsen) REFERENCES Produsen(Id_Produsen) ON DELETE CASCADE,
+    FOREIGN KEY (Id_User) REFERENCES USER(Id_User) ON DELETE CASCADE
+);
+
+CREATE TABLE Penjualan (
+    Id_Penjualan INT AUTO_INCREMENT PRIMARY KEY,
+    Id_Obat INT NOT NULL,
+    Id_User INT NOT NULL,
+    Total INT NOT NULL CHECK (Total > 0),
+    Jumlah_Bayar DECIMAL(10,2) NOT NULL CHECK (Jumlah_Bayar > 0),
+    FOREIGN KEY (Id_Obat) REFERENCES Obat(Id_Obat) ON DELETE CASCADE,
+    FOREIGN KEY (Id_User) REFERENCES USER(Id_User) ON DELETE CASCADE
+);
+
+CREATE TABLE Pembelian (
+    Id_Pembelian INT AUTO_INCREMENT PRIMARY KEY,
+    Id_Pembeli INT NOT NULL,
+    Id_Produsen INT NOT NULL,
+    Tgl_Transaksi DATE NOT NULL,
+    Jumlah INT NOT NULL CHECK (Jumlah > 0),
+    FOREIGN KEY (Id_Pembeli) REFERENCES Pembeli(Id_Pembeli) ON DELETE CASCADE,
+    FOREIGN KEY (Id_Produsen) REFERENCES Produsen(Id_Produsen) ON DELETE CASCADE
+);
