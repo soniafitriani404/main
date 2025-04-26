@@ -1,5 +1,5 @@
 
-----------------------------------------------MODUL 4--------------------------------------------------------------------
+-----------------------------------------------------MODUL 4--------------------------------------------------------------
 
 
 -- # No. 1 Kolom keterangan di salah satu tabel pada bagian akhir tabel tersebut!
@@ -51,8 +51,8 @@ WHERE id_perawatan = 10;
 SELECT * FROM perawatan
 
 
-
 --------------------------------------------------------------------------------------------------------------------------------------
+
 
 -- # No. 2 Gabungan 2 tabel yang memungkinkan dan memiliki fungsi pada penerapannya!
 
@@ -74,10 +74,11 @@ ORDER BY bm.tanggal_panen ASC, total_penjualan DESC;
 bawang_merah digabung dengan detail_pembelian berdasarkan id_bawang
 detail_pembelian digabung lagi dengan pembeli berdasarkan id_pembeli
 
---------------------------------------------------------------------------------------------------
 
--- # No. 3 Urutan kolom pada setiap tabel menggunakan perintah Order By, DESC, dan ASC
-(minimal 1 untuk setiap perintah) 
+-------------------------------------------------------------------------------------------------------------------------
+
+
+-- # No. 3 Urutan kolom pada setiap tabel menggunakan perintah Order By, DESC, dan ASC(minimal 1 untuk setiap perintah) 
 
 SELECT * FROM petani
 ORDER BY nama_petani ASC;
@@ -98,7 +99,7 @@ SELECT * FROM detail_pembelian
 ORDER BY tanggal_pembelian DESC;
 
 
------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
 
 
 -- #  No. 4 Perubahan pada salah satu tipe data yang dapat berguna
@@ -117,13 +118,14 @@ MODIFY COLUMN jenis_perawatan ENUM(
 SELECT * FROM perawatan
 
 
+-------------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------------
 
 -- # No. 5 Kode Left Join, Right Join dan Self Join beserta dengan alur prosesnya
 
-
---- KIRI ---
+========================================
+		-- KIRI --
+========================================
 
 SELECT p.nama_petani, l.lokasi, l.luas
 FROM petani p
@@ -133,20 +135,22 @@ LEFT JOIN lahan l ON p.id_petani = l.id_petani;
 Tabel petani ada di sebelah kiri.
 Tabel lahan ada di kanan join.
 
-
-
---- KANAN ---
+========================================
+		-- KANAN --
+========================================
 
 SELECT l.lokasi, p.nama_petani
 FROM petani p
 RIGHT JOIN lahan l ON p.id_petani = l.id_petani;
 
 
-
 l.lokasi dari kolom lokalahan dari tabel lahan
 p.nama_petani dari kolom nama petani dari tabel petani
 
---- DIRI SENDIRI---
+
+==============================================
+		-- DIRI SENDIRI --
+==============================================
 
 SELECT 
   p1.nama_petani AS petani_1,
@@ -159,7 +163,9 @@ WHERE p1.id_petani != p2.id_petani;
 JOINn dilakukan berdasarkan alamat yang sama
 kondisi agar tidak membandingkan petani yang sama:
 
+
 -----------------------------------------------------------------------------------------------
+
 
 -- # No. 6 Kode yang mengandung operator perbandingan (Minimal 5)
 
